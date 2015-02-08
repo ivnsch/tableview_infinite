@@ -15,7 +15,7 @@ class ViewController: UITableViewController {
     
     @IBOutlet var tableViewFooter:MyFooter!
     
-    var items:MyItem[] = []
+    var items:[MyItem] = []
     
     var loading = false
     
@@ -38,15 +38,15 @@ class ViewController: UITableViewController {
             return MyDataProvider() //return a new instance since class vars not supported yet
         }
         
-        func requestData(offset:Int, size:Int, listener:(MyItem[]) -> ()) {
+        func requestData(offset:Int, size:Int, listener:([MyItem]) -> ()) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 //simulate delay
                 sleep(2)
                 
                 //generate items
-                var arr:MyItem[] = []
+                var arr:[MyItem] = []
                 for i in offset...(offset + size) {
-                    arr += MyItem(name: "Item " + String(i))
+                    arr.append(MyItem(name: "Item \(i)"))
                 }
                 
                 //call listener in main thread
@@ -57,7 +57,7 @@ class ViewController: UITableViewController {
         }
     }
     
-    override func scrollViewDidScroll(scrollView: UIScrollView!) {
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
@@ -84,10 +84,10 @@ class ViewController: UITableViewController {
             self.setLoadingState(true)
 
             MyDataProvider.getInstance().requestData(offset, size: size,
-                listener: {(items:ViewController.MyItem[]) -> () in
+                listener: {(items:[ViewController.MyItem]) -> () in
                     
                     for item:MyItem in items {
-                        self.items += item
+                        self.items.append(item)
                     }
                     
                     self.tableView.reloadData()
@@ -102,20 +102,20 @@ class ViewController: UITableViewController {
         self.tableViewFooter.hidden = !loading
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
     
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell:UITableViewCell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath) as UITableViewCell
         
         let item = items[indexPath.row]
         
-        cell.text = item.name
+        cell.textLabel?.text = item.name
         
         return cell
     }
