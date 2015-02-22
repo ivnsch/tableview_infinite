@@ -44,9 +44,8 @@ class ViewController: UITableViewController {
                 sleep(2)
                 
                 //generate items
-                var arr:[MyItem] = []
-                for i in offset...(offset + size) {
-                    arr.append(MyItem(name: "Item \(i)"))
+                let arr = (offset...(offset + size)).map {
+                    MyItem(name: "Item \($0)")
                 }
                 
                 //call listener in main thread
