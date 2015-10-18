@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>29B658A5-1D56-47FF-A13A-E4B4878E1658</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AsyncTableView</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>F84233CA351CDE914C0323224477B4D8140F0EEB</key>
+		<string>https://github.com/i-schuetz/tableview_infinite.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>AsyncTableView.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>F84233CA351CDE914C0323224477B4D8140F0EEB</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/i-schuetz/tableview_infinite.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>F84233CA351CDE914C0323224477B4D8140F0EEB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F84233CA351CDE914C0323224477B4D8140F0EEB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>tableview_infinite</string>
+		</dict>
+	</array>
+</dict>
+</plist>

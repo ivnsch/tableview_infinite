@@ -8,97 +8,84 @@
 
 import UIKit
 
-class ViewController: UITableViewController {
-    
-    let PageSize = 20
-    let cellId = "cell"
-    
-    @IBOutlet var tableViewFooter:MyFooter!
-    
-    var items:[MyItem] = []
-    
-    var loading = false
-    
 
-    class MyItem : Printable {
-        let name:String!
-        
-        init(name:String) {
-            self.name = name
-        }
-        
-        var description: String {
-            return name
-        }
+struct MyItem {
+    let name: String
+    init(name: String) {
+        self.name = name
+    }
+}
+
+class MyDataProvider {
+    
+    static var instance: MyDataProvider {
+        return MyDataProvider()
     }
     
-    class MyDataProvider {
-        
-        class func getInstance() -> MyDataProvider {
-            return MyDataProvider() //return a new instance since class vars not supported yet
-        }
-        
-        func requestData(offset:Int, size:Int, listener:([MyItem]) -> ()) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                //simulate delay
-                sleep(2)
-                
-                //generate items
-                let arr = (offset...(offset + size)).map {
-                    MyItem(name: "Item \($0)")
-                }
-                
-                //call listener in main thread
-                dispatch_async(dispatch_get_main_queue()) {
-                    listener(arr)
-                }
+    func requestData(offset: Int, size: Int, listener: [MyItem] -> Void) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            // simulate delay
+            sleep(2)
+            
+            // generate items
+            let items = (offset...(offset + size)).map {
+                MyItem(name: "Item \($0)")
+            }
+            
+            // call listener in main thread
+            dispatch_async(dispatch_get_main_queue()) {
+                listener(items)
             }
         }
     }
+}
+
+
+class ViewController: UITableViewController {
+
+    @IBOutlet var tableViewFooter: MyFooter!
     
+    private let pageSize = 20
+    
+    private var items: [MyItem] = []
+    
+    private var loading = false {
+        didSet {
+            tableViewFooter.hidden = !loading
+        }
+    }
+
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
         if (maximumOffset - currentOffset) <= 40 {
-            loadSegment(items.count, size: PageSize)
+            loadSegment(items.count, size: pageSize)
         }
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellId)
-        
-        self.tableViewFooter.hidden = true
-
-        loadSegment(0, size: PageSize)
+        tableViewFooter.hidden = true
+        loadSegment(0, size: pageSize)
     }
     
-    func loadSegment(offset:Int, size:Int) {
+    func loadSegment(offset: Int, size: Int) {
         
-        if (!self.loading) {
-            
-            self.setLoadingState(true)
+        if (!loading) {
+            loading = true
 
-            MyDataProvider.getInstance().requestData(offset, size: size,
-                listener: {(items:[ViewController.MyItem]) -> () in
-                    
-                    for item:MyItem in items {
-                        self.items.append(item)
-                    }
-                    
-                    self.tableView.reloadData()
+            MyDataProvider.instance.requestData(offset, size: size) {[weak self] items in
+                for item in items {
+                    self?.items.append(item)
+                }
+                
+                self?.tableView.reloadData()
 
-                    self.setLoadingState(false)
-                })
+                self?.loading = false
+            }
         }
-    }
-    
-    func setLoadingState(loading:Bool) {
-        self.loading = loading
-        self.tableViewFooter.hidden = !loading
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -110,7 +97,7 @@ class ViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell:UITableViewCell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
         
         let item = items[indexPath.row]
         
